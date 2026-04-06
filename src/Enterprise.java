@@ -105,10 +105,12 @@ public class Enterprise {
     }
     
     public void mover(double curso, double warp) {
-
-    if (curso < 1.0 || curso >= 9.0) {
-    System.out.println("Ehm.. curso inválido capitán, el valor permitido es 1.0 entre 8.9");
-    return;
+    if (curso == 9 || curso==9.0){
+        curso=1.0;
+    }
+    if (curso < 1.0 || curso > 9.0) {
+        System.out.println("Ehm.. curso inválido capitán, el valor permitido es 1 entre 9");
+        return;
     }    
     if (warp < 0.125 || warp > 8) {
         System.out.println("Ese warp es inexistente, señor.");
@@ -137,7 +139,7 @@ public class Enterprise {
     
     //final de cuadrantes
     if (posicionFinalX < 0 || posicionFinalX >= 64 || posicionFinalY < 0 || posicionFinalY >= 64) {
-        System.out.println("Si avanzamos más nos perderemos en el espacio!");
+        System.out.println("Si avanzamos más nos perderemos en el espacio, no podemos seguir por ahí!");
         return;
     }
     
@@ -163,7 +165,9 @@ public class Enterprise {
     return "Stardate:" + (int)getFechaEstelar() + "Días Restantes: " + (int)this.diasRestantes +
            "Cuadrante[" + (getCuadranteX() + 1) + "," + (getCuadranteY() + 1) + "] " +
            "Sector[" + (getSectorX() + 1) + "," + (getSectorY() + 1) + "]" +
-           "Energia restante" + " " + getEnergia();
+           "Energia restante" + " " + getEnergia() + 
+           "Escudos: " + getEscudos() + 
+           "Torpedos: " + getTorpedos();
     }
     public void mostrarMapa() {
     System.out.println("\n--------------------------------");
@@ -181,18 +185,18 @@ public class Enterprise {
     System.out.println("---------------------------------");
     }
     
-    public void verificarGameOver(){
+    public boolean verificarGameOver(){
         if ((int)this.diasRestantes<=0){
         System.out.println("El tiempo se ha agotado señor... los Klingons han sometido a la federación...");
         System.out.println("Usted ha perdido.");
-        System.exit(0);
+        return false;
     }    
         if (this.energia <=0){
             System.out.println("CAPITÁN, nuestra energía se ha agotado, nos hemos varado y pronto vendrán por nosotros");
             System.out.println("Los klingons nos acabarán pronto, ha sido un placer.");
             System.out.println("Usted ha perdido.");
-            System.exit(0);
+            return false;
         } 
-        
+        return true;
     }
 }
