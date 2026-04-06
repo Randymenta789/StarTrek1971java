@@ -20,7 +20,7 @@ public class Enterprise {
         return energia;
     }
 
-    public void setEnergia(double ener) {
+    public final void setEnergia(double ener) {
        this.energia = (ener < 0) ? 0 : ener;
     }
 
@@ -28,7 +28,7 @@ public class Enterprise {
         return escudos;
     }
 
-    public void setEscudos(double esc) {
+    public final void setEscudos(double esc) {
         this.escudos = (esc<0) ? 0 : esc;
     }
 
@@ -36,7 +36,7 @@ public class Enterprise {
         return torpedos;
     }
 
-    public void setTorpedos(int torp) {
+    public final void setTorpedos(int torp) {
         if(torp >= 0 ){
             this.torpedos = torp;
         }else {
@@ -49,7 +49,7 @@ public class Enterprise {
         return cuadranteX;
     }
 
-    public void setCuadranteX(int cX) {
+    public final void setCuadranteX(int cX) {
     if (cX >= 0 && cX <= 7) {
         this.cuadranteX = cX;
     }
@@ -61,7 +61,7 @@ public class Enterprise {
        
     }
 
-    public void setCuadranteY(int cY) {
+    public final void setCuadranteY(int cY) {
        if (cY >= 0 && cY <= 7) {
         this.cuadranteY = cY;
         
@@ -72,7 +72,7 @@ public class Enterprise {
         return sectorX;
     }
 
-    public void setSectorX(int sX) {
+    public final void setSectorX(int sX) {
     if (sX >= 0 && sX <= 7) {
         this.sectorX = sX;
     } else {
@@ -84,7 +84,7 @@ public class Enterprise {
         return sectorY;
     }
 
-    public void setSectorY(int sY) {
+    public final void setSectorY(int sY) {
         if (sY >= 0 && sY <= 7) {
         this.sectorY = sY;
     } else {
@@ -94,8 +94,12 @@ public class Enterprise {
     }
     
     public void mover(double curso, double warp) {
-    if (warp < 0.125) {
-        System.out.println("Se requiere al menos Warp 0.125 para poder avanzar, señor.");
+    if (curso < 1.0 || curso >= 9.0) {
+    System.out.println("Ehm.. curso inválido capitán, el valor permitido es 1.0 entre 8.9");
+    return;
+    }    
+    if (warp < 0.125 || warp > 8) {
+        System.out.println("Ese warp es inexistente, señor.");
         return; 
     }
     double costoEnergia = warp * 100;
@@ -105,7 +109,7 @@ public class Enterprise {
     }
     
     //angulo en rad
-    double angulo = (curso - 1.0) * Math.PI / 4;
+    double angulo = (curso - 1.0) * (-Math.PI / 4.0);
     
     //calculo de trayecto por el mapa
     double distanciaSectores = warp * 8.0;
@@ -143,6 +147,21 @@ public class Enterprise {
     return "Cuadrante[" + (getCuadranteX() + 1) + "," + (getCuadranteY() + 1) + "] " +
            "Sector[" + (getSectorX() + 1) + "," + (getSectorY() + 1) + "]" +
            "Energia restante" + " " + getEnergia();
+    }
+    public void mostrarMapa() {
+    System.out.println("\n--------------------------------");
+    for (int y = 0; y < 8; y++) {
+        System.out.print("| ");     
+        for (int x = 0; x < 8; x++) {
+            if (x == getSectorX() && y == getSectorY()) {
+                System.out.print("<*> "); 
+            } else {
+                System.out.print(" .  "); 
+            }
+        }
+        System.out.println("|"); 
+    }
+    System.out.println("---------------------------------");
     }
     
 }
