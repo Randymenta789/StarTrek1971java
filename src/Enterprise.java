@@ -1,12 +1,15 @@
 public class Enterprise {
-
+    private double fechaEstelar;
+    private double diasRestantes=15;
     private double energia;
     private double escudos;
     private int torpedos;
     private int cuadranteX, cuadranteY;
     private int sectorX, sectorY;
 
-    public Enterprise(double ener, double esc, int torp, int cX, int cY, int sX, int sY) {
+    public Enterprise(double fEst, double ener, double esc, int torp, int cX, int cY, int sX, int sY) {
+        setFechaEstelar(fEst);
+     
         setEnergia(ener);
         setEscudos(esc);
         setTorpedos(torp);
@@ -15,13 +18,21 @@ public class Enterprise {
         setSectorX(sX);
         setSectorY(sY);
     }
-
-    public double getEnergia() {
-        return energia;
+    public double getFechaEstelar() {
+        return fechaEstelar;
     }
 
+    public final void setFechaEstelar(double fEst) {
+        this.fechaEstelar = fEst;
+    }
+
+     public double getEnergia() {
+        return energia;
+    }
+     
     public final void setEnergia(double ener) {
-       this.energia = (ener < 0) ? 0 : ener;
+       this.energia = (ener <= 10) ? 0 : ener;
+       
     }
 
     public double getEscudos() {
@@ -94,6 +105,7 @@ public class Enterprise {
     }
     
     public void mover(double curso, double warp) {
+
     if (curso < 1.0 || curso >= 9.0) {
     System.out.println("Ehm.. curso inválido capitán, el valor permitido es 1.0 entre 8.9");
     return;
@@ -107,6 +119,7 @@ public class Enterprise {
         System.out.println("No tenemos energía suficiente para hacer eso, capitán.");
         return;
     }
+    
     
     //angulo en rad
     double angulo = (curso - 1.0) * (-Math.PI / 4.0);
@@ -130,7 +143,10 @@ public class Enterprise {
     
     //actualización de datos
     if (saltoX != 0 || saltoY != 0) {
-    this.energia -= costoEnergia; 
+    setEnergia(this.energia - costoEnergia);
+    this.setFechaEstelar(this.fechaEstelar+warp);
+    this.diasRestantes -= warp;
+
    
     this.setCuadranteX((int) (posicionFinalX / 8));
     this.setSectorX((int) (posicionFinalX % 8));
@@ -139,12 +155,13 @@ public class Enterprise {
     this.setSectorY((int) (posicionFinalY % 8));
     
     } else {
-    System.out.println("Warp insuficiente, añade .");
+    System.out.println("Warp insuficiente, añade más potencia capitán.");
     }
-       
+    verificarGameOver();
     }
     public String getPosicionActual() {
-    return "Cuadrante[" + (getCuadranteX() + 1) + "," + (getCuadranteY() + 1) + "] " +
+    return "Stardate:" + (int)getFechaEstelar() + "Días Restantes: " + (int)this.diasRestantes +
+           "Cuadrante[" + (getCuadranteX() + 1) + "," + (getCuadranteY() + 1) + "] " +
            "Sector[" + (getSectorX() + 1) + "," + (getSectorY() + 1) + "]" +
            "Energia restante" + " " + getEnergia();
     }
@@ -164,4 +181,18 @@ public class Enterprise {
     System.out.println("---------------------------------");
     }
     
+    public void verificarGameOver(){
+        if ((int)this.diasRestantes<=0){
+        System.out.println("El tiempo se ha agotado señor... los Klingons han sometido a la federación...");
+        System.out.println("Usted ha perdido.");
+        System.exit(0);
+    }    
+        if (this.energia <=0){
+            System.out.println("CAPITÁN, nuestra energía se ha agotado, nos hemos varado y pronto vendrán por nosotros");
+            System.out.println("Los klingons nos acabarán pronto, ha sido un placer.");
+            System.out.println("Usted ha perdido.");
+            System.exit(0);
+        } 
+        
+    }
 }
