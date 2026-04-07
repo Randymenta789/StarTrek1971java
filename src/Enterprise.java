@@ -170,7 +170,8 @@ public class Enterprise {
            "Torpedos: " + getTorpedos();
     }
     public void mostrarMapa() {
-    System.out.println("\n--------------------------------");
+    System.out.println("MAPA");
+    System.out.println("--------------------------------");
     for (int y = 0; y < 8; y++) {
         System.out.print("| ");     
         for (int x = 0; x < 8; x++) {
@@ -183,6 +184,16 @@ public class Enterprise {
         System.out.println("|"); 
     }
     System.out.println("---------------------------------");
+    }
+    
+    public void escudos(double esc){
+        if(esc<this.energia){       
+            this.energia -= esc;
+            this.escudos = this.escudos + esc;
+        }else {
+            System.out.println("Tiene muy poca energía para eso, señor");
+        }
+        
     }
     
     public boolean verificarGameOver(){
