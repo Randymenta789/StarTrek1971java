@@ -1,4 +1,5 @@
-public class Enterprise {
+import java.util.Random;
+public final class Enterprise {
     private double fechaEstelar;
     private double diasRestantes=15;
     private double energia;
@@ -6,10 +7,15 @@ public class Enterprise {
     private int torpedos;
     private int cuadranteX, cuadranteY;
     private int sectorX, sectorY;
+    private int[][] galaxia = new int[8][8];
+    private int[][] galaxiaActual = new int[8][8];
+    private long semilla;
+    private Random rd;
+    
 
-    public Enterprise(double fEst, double ener, double esc, int torp, int cX, int cY, int sX, int sY) {
-        setFechaEstelar(fEst);
-     
+    public Enterprise(long seed, double fEst, double ener, double esc, int torp, int cX, int cY, int sX, int sY) {
+        setSemilla(seed);
+        setFechaEstelar(fEst);    
         setEnergia(ener);
         setEscudos(esc);
         setTorpedos(torp);
@@ -17,7 +23,32 @@ public class Enterprise {
         setCuadranteY(cY);
         setSectorX(sX);
         setSectorY(sY);
+        //galaxia
+        for(int i=0; i<8; i++) {
+          for(int j=0; j<8; j++) {
+          this.galaxia[i][j] = -1; 
+        //
+        }
+        this.rd = new Random(this.semilla);
+        this.galaxiaActual = new int[8][8];
+        this.cuadranteX = rd.nextInt(8);
+        this.cuadranteY = rd.nextInt(8);
+        this.nuevoUniverso();
+      }
     }
+
+    public long getSemilla() {
+        return semilla;
+    }
+    
+    
+    public void setSemilla(long seed) {
+        this.semilla = seed;
+        
+    }
+
+    
+    
     public double getFechaEstelar() {
         return fechaEstelar;
     }
@@ -104,6 +135,43 @@ public class Enterprise {
         
     }
     
+     public void nuevoUniverso(){
+         int klingons = 30;
+         int basesEstelares = 10;
+         
+         for (int i = 0; i < 8; i++) {
+             for (int j = 0; j < 8; j++) {
+                 this.galaxiaActual[i][j] = this.rd.nextInt(9)+ 1;
+             }
+         }
+         do {
+               int filaRandom = this.rd.nextInt(8);
+               int columnaRandom = this.rd.nextInt(8);
+               if(this.galaxiaActual[filaRandom][columnaRandom]< 900){
+                  this.galaxiaActual[filaRandom][columnaRandom] += 100;
+                  klingons--;
+               }
+              
+             
+         } while (klingons > 0);
+         
+         do {
+               int filaRandom = this.rd.nextInt(8);
+               int columnaRandom = this.rd.nextInt(8);
+               int basesActuales = (this.galaxiaActual[filaRandom][columnaRandom] % 100) / 10;
+               if (basesActuales < 9) {
+                   this.galaxiaActual[filaRandom][columnaRandom] += 10;
+                   basesEstelares--;
+    }
+             
+         } while (basesEstelares > 0);
+         
+         
+     }
+
+     
+ 
+     
     public void mover(double curso, double warp) {
     if (curso == 9 || curso==9.0){
         curso=1.0;
@@ -161,6 +229,10 @@ public class Enterprise {
     }
     verificarGameOver();
     }
+    
+   
+    
+    
     public String getPosicionActual() {
     return "Stardate:" + (int)getFechaEstelar() + "Días Restantes: " + (int)this.diasRestantes +
            "Cuadrante[" + (getCuadranteX() + 1) + "," + (getCuadranteY() + 1) + "] " +
@@ -169,27 +241,96 @@ public class Enterprise {
            "Escudos: " + getEscudos() + 
            "Torpedos: " + getTorpedos();
     }
-    public void mostrarMapa() {
-    System.out.println("MAPA");
-    System.out.println("--------------------------------");
-    for (int y = 0; y < 8; y++) {
-        System.out.print("| ");     
-        for (int x = 0; x < 8; x++) {
-            if (x == getSectorX() && y == getSectorY()) {
-                System.out.print("<*> "); 
-            } else {
-                System.out.print(" .  "); 
-            }
+    
+    
+        public void mostrarSector() {
+        int valor = this.galaxiaActual[this.cuadranteX][this.cuadranteY];
+        int k = valor / 100;
+        int b = (valor % 100) / 10;
+        int e = valor % 10; 
+         
+        String[][] mapeo = new String[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+               mapeo[i][j] = " . "; 
+        }
+    }
+        Random rndSector = new Random(valor);
+        mapeo[this.getSectorY()][this.getSectorX()] = "<*>";    
+      
+       
+        
+       for (int i = 0; i < 100 && k > 0; i++) {
+        int r = rndSector.nextInt(8); int c = rndSector.nextInt(8);
+        if (mapeo[r][c].equals(" . ")) { mapeo[r][c] = "+K+"; k--; }
+    }
+    for (int i = 0; i < 100 && b > 0; i++) {
+        int r = rndSector.nextInt(8); int c = rndSector.nextInt(8);
+        if (mapeo[r][c].equals(" . ")) { mapeo[r][c] = ">B<"; b--; }
+    }
+    for (int i = 0; i < 100 && e > 0; i++) {
+        int r = rndSector.nextInt(8); int c = rndSector.nextInt(8);
+        if (mapeo[r][c].equals(" . ")) { mapeo[r][c] = " * "; e--; }
+    }
+         
+         System.out.println("\n--------------------------------");
+         for (int y = 0; y < 8; y++) {
+         System.out.print("| ");     
+         for (int x = 0; x < 8; x++) {
+            System.out.print(mapeo[y][x] + " ");
         }
         System.out.println("|"); 
     }
     System.out.println("---------------------------------");
     }
     
+    
+    public void mostrarMapa() {
+    System.out.println("MAPA");
+    System.out.println("--------------------------------");
+    for (int y = 0; y < 8; y++) {
+        System.out.print("| ");     
+        for (int x = 0; x < 8; x++) {
+            if (x == this.cuadranteX && y == this.cuadranteY) {
+                System.out.print(" <*> "); 
+            } else if (this.galaxia[x][y]== -1) {                     
+                    System.out.print(" ??? ");
+                }else{
+                    System.out.printf(" %03d ", this.galaxia[x][y]);
+                }
+              
+            
+        }
+        System.out.println("|"); 
+    }
+    System.out.println("---------------------------------");
+    }
+
+    
+   
+    public void Comando2(){
+        int i = 0;
+        int j = 0;
+            for (i = -1; i <=1 ; i++) {
+                for (j = -1; j <= 1; j++){
+                int filaDestino = this.cuadranteX + i;
+                int colDestino = this.cuadranteY + j;
+                  
+                if (filaDestino >= 0 && filaDestino < 8 && colDestino >= 0 && colDestino < 8){
+                this.galaxia[filaDestino][colDestino] = this.galaxiaActual[filaDestino][colDestino];    
+                }
+                  
+            }
+        }
+        
+        
+        
+    }
+    
     public void escudos(double esc){
         if(esc<this.energia){       
-            this.energia -= esc;
-            this.escudos = this.escudos + esc;
+            this.energia -= (int)esc;
+            this.escudos = (int)(this.escudos + esc);
         }else {
             System.out.println("Tiene muy poca energía para eso, señor");
         }
@@ -210,4 +351,7 @@ public class Enterprise {
         } 
         return true;
     }
+    
+    
+    
 }

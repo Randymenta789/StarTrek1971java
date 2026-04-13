@@ -6,16 +6,33 @@ public class Main {
         // hay que sumar 1 para el usuario final(1,8)
         Scanner sc = new Scanner(System.in);
         
-        Enterprise miNave = new Enterprise(2000, 1000, 0, 5, /* COORDENADAS(cX,cY,sX,sY) */0, 0, 0, 0 );
-        mostrarMenuPrincipal();
-        int inicio = sc.nextInt();
-        if (inicio == 1) {
-             Instrucciones();
-             pausar(sc);
-        }
-        miNave.mostrarMapa();
-        pausar(sc);
-        System.out.println("Ubicación actual: " + miNave.getPosicionActual());
+        Enterprise miNave = new Enterprise(12, 2000, 1000, 0, 5, /* COORDENADAS(cX,cY,sX,sY) */0, 0, 0, 0 );
+        int inicio;
+        do {
+            mostrarMenuPrincipal(); 
+            inicio = sc.nextInt();
+            sc.nextLine();
+
+        switch (inicio) {
+            case 1:
+            Instrucciones();
+            pausar(sc);
+            break;
+
+            case 2:
+            miNave.mostrarMapa();
+            System.out.println("Ubicación actual: " + miNave.getPosicionActual());
+            pausar(sc);
+            break;
+
+        default:
+            System.out.println("Valor incorrecto");
+            break;
+            }
+
+         } while (inicio != 1 && inicio != 2);
+
+       
         int op = 0;
         do { sheet();
             
@@ -33,8 +50,12 @@ public class Main {
                     pausar(sc);
                     break;
                 case 1:
-                    miNave.mostrarMapa();
+                    miNave.mostrarSector();
                     pausar(sc);
+                    break;
+                case 2:
+                    miNave.Comando2();
+                    miNave.mostrarMapa();
                     break;
                 case 5:
                     System.out.println("Qué cantidad de escudos desea?");
@@ -54,10 +75,9 @@ public class Main {
                     System.out.println("Computadora");
                     break;
                 case 7: 
-                    System.out.println("Computadora activada, elija opción 0, 1 o 2");
-                    System.out.println("0 = Muestra todo lo que has descubierto de la galaxia");
-                    System.out.println("1 = Reporte de estado; Muestra el número de klingons que hay, días restantes y bases estelares que quedan");
-                    System.out.println("2 = Hacer cálculo para usar torpedos");
+                    System.out.println("Computadora inteligente prendida ¿qué opción desea?");
+                    System.out.println("0 = Reporte d estado; Muestra el número de klingons que hay, días restaentes y bases estelares que quedan");
+                    System.out.println("1 = Hacer cálculo para usar torpedos");
                     int otroop = sc.nextInt();
                     switch(otroop){
                         case 0:
@@ -65,8 +85,7 @@ public class Main {
                         case 1:
                             System.out.println("");
                             break;
-                        case 2:
-                            break;
+                      
                     }
                     
                 default:
@@ -85,6 +104,8 @@ public class Main {
          sc.nextLine(); 
          sc.nextLine(); 
      }
+     
+     
      public static void mostrarMenuPrincipal(){
         System.out.println("--------------Port de Star Trek de 1971--------------");
         System.out.println("Elija una opción: \n");
