@@ -17,12 +17,7 @@ public class Main {
         ///
         int inicio;
         do {
-            System.out.println("\n╔══════════════════════════════════════════╗");
-            System.out.println("║ *** ¡VICTORIA! ***                  ║");
-            System.out.println("║ ¡Has destruido a todos los Klingons!║");
-            System.out.println("║ ¡La Federación está a salvo!        ║");
-            System.out.println("╚══════════════════════════════════════════╝");
-            System.exit(0);
+
             mostrarMenuPrincipal();
             inicio = sc.nextInt();
 
